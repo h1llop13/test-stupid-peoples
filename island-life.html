@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#e9e5dc">
+  <title>Живой остров — атлас живого мира</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="simulation.js" defer></script>
+  <script src="renderer.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="./island-life.html" aria-label="Живой остров">
+      <span class="brand-mark" aria-hidden="true">◉</span>
+      <span>Живой остров<small>АТЛАС ЖИВОГО МИРА</small></span>
+    </a>
+    <nav class="top-nav" aria-label="Разделы атласа">
+      <button class="nav-link active" id="nav-world">Обзор мира</button>
+      <button class="nav-link" id="nav-people">Цивилизации <span>03</span></button>
+      <button class="nav-link" id="nav-history">Хроника</button>
+    </nav>
+    <div class="header-actions">
+      <span class="offline"><i></i> Локальный мир</span>
+      <button class="icon-button" id="open-saves" aria-label="Сохранения" title="Сохранения"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 3h12l4 4v14H3V3h2Z"/><path d="M7 3v6h10V3M7 21v-7h10v7"/></svg></button>
+    </div>
+  </header>
+  <main class="atlas">
+    <section class="overview-heading">
+      <div><div class="eyebrow">МИР № 0001 <span>·</span> НАЧАЛО ИСТОРИИ</div><h1>Всё начинается с жизни<span>.</span></h1><p>У каждого — своя история. У мира — ни одного сценария.</p></div>
+      <div class="world-date"><span id="season">Весна · год 1</span><strong id="clock">1 марта, 07:00</strong><small id="time-description">Игровой календарь · 360×</small></div>
+    </section>
+    <section class="workspace">
+      <div class="map-column">
+        <section class="map-panel" aria-label="Интерактивная планета">
+          <canvas id="world" tabindex="0" aria-label="Планета. Перетаскивайте для вращения, колесо для масштаба. Выберите поселение и откройте регион."></canvas>
+          <div class="map-heading"><span class="live-dot"></span><span id="map-kicker">ЖИВАЯ ПЛАНЕТА</span><span class="map-tag" id="map-status">Наблюдение</span></div>
+          <div class="map-tabs" role="group" aria-label="Масштаб карты"><button class="active" id="globe-mode" aria-pressed="true">Планета</button><button id="region-mode" aria-pressed="false">Регион <span>↗</span></button></div>
+          <div class="planet-caption" id="planet-caption"><span class="eyebrow">НЕБОЛЬШОЙ МИР. БОЛЬШАЯ ИСТОРИЯ.</span><h2>Элион</h2><p>Три поселения.<br>Бесчисленные возможности.</p></div>
+          <div class="map-side-controls">
+            <button id="zoom-in" aria-label="Приблизить" title="Приблизить">+</button><button id="zoom-out" aria-label="Отдалить" title="Отдалить">−</button>
+            <span></span><button id="focus" aria-label="К выбранному поселению" title="К выбранному поселению">⌖</button><button id="toggle-clouds" aria-label="Облачность" title="Показать или скрыть облачность" aria-pressed="true">☁</button>
+          </div>
+          <div class="map-bottom"><div class="map-legend"><span><i class="gold"></i> Поселения</span><span><i class="teal"></i> Леса</span><span><i class="white"></i> Горные хребты</span></div><span id="map-help">Перетаскивайте, чтобы вращать планету</span></div>
+          <div id="map-tooltip" class="map-tooltip" hidden></div>
+        </section>
+        <section class="time-bar" aria-label="Управление временем">
+          <button class="play-button" id="pause" aria-label="Приостановить симуляцию" title="Пауза · пробел"><span id="pause-symbol">Ⅱ</span></button>
+          <div class="time-label"><strong id="running-label">Мир живёт</strong><small id="tick-label">Ускоренное наблюдение</small></div>
+          <div class="speed-picker" aria-label="Скорость симуляции"><button data-speed="1">1×</button><button data-speed="60">60×</button><button data-speed="360" class="active">360×</button><button data-speed="3600">3600×</button></div>
+          <button class="quiet-button" id="save-quick" title="Сохранить текущий мир">Сохранить <span>↗</span></button>
+        </section>
+        <section class="world-stats" aria-label="Статистика мира">
+          <div><span class="stat-icon">♙</span><div><span>Население</span><strong id="population">36 <small>жителей</small></strong></div></div>
+          <div><span class="stat-icon">⌂</span><div><span>Поселения</span><strong>3 <small>общины</small></strong></div></div>
+          <div><span class="stat-icon">⌘</span><div><span>Знания</span><strong id="knowledge-count">3 <small>технологии</small></strong></div></div>
+          <div><span class="stat-icon">♧</span><div><span>Живая природа</span><strong id="animal-count">39 <small>животных</small></strong></div></div>
+        </section>
+      </div>
+      <aside class="inspector">
+        <div class="section-heading"><span class="eyebrow">БЛИЖЕ К ЖИЗНИ</span><span class="tiny-circle">↗</span></div>
+        <div class="inspector-tabs"><button id="tab-settlements" class="active">Поселения</button><button id="tab-residents">Жители</button></div>
+        <div id="settlement-list"></div>
+        <div id="residents-section" hidden><label class="search-label"><span>⌕</span><input id="resident-search" type="search" placeholder="Найти жителя…" aria-label="Найти жителя"></label><div id="resident-list"></div></div>
+        <section class="settlement-detail" id="settlement-detail">
+          <div class="eyebrow" id="culture">ЛЮДИ ДОЛИНЫ</div><h2 id="settlement-name">Вереск</h2><p id="settlement-goal">Обустраивают новую жизнь.</p>
+          <div class="stock-grid"><div><span>Еда</span><strong id="food-stock">45</strong><small id="food-days">запас на 1,6 дня</small></div><div><span>Древесина</span><strong id="wood-stock">12</strong><small>единиц</small></div><div><span>Камень</span><strong id="stone-stock">6</strong><small>единиц</small></div></div>
+          <div class="weather-line"><span id="weather-icon">☀</span><span id="weather">Ясно, +20°</span><small id="local-time">Местное время</small></div>
+          <button class="region-button" id="visit-region">Рассмотреть поселение <span>↗</span></button>
+        </section>
+        <section id="person-card" hidden></section>
+        <div class="observer-note"><span>✳</span><p>Вы — наблюдатель.<br>Жители сами выбирают свой путь.</p></div>
+      </aside>
+    </section>
+    <section class="chronicle" id="chronicle">
+      <div class="chronicle-heading"><div><span class="eyebrow">ИСТОРИЯ ПИШЕТСЯ СЕЙЧАС</span><h2>Хроника мира <span id="event-count">03</span></h2></div><select id="event-filter" aria-label="Фильтр хроники"><option value="all">Все события</option><option value="local">Выбранное поселение</option><option value="important">Важные события</option></select></div>
+      <div class="event-grid" id="events"></div>
+    </section>
+    <footer><span>ЭЛИОН <i>·</i> ЖИВОЙ ОСТРОВ</span><span>Наблюдайте. Удивляйтесь. Запоминайте.</span><span id="save-status">Автосохранение включено</span></footer>
+  </main>
+  <dialog id="save-dialog"><form method="dialog"><button class="dialog-close" aria-label="Закрыть">×</button></form><div class="eyebrow">СОХРАНИТЬ ИСТОРИЮ</div><h2>Ваши миры</h2><p>Три ручных слота и отдельное автосохранение. Мир загружается на паузе.</p><div id="save-slots"></div><p class="small" id="save-message"></p><div class="dialog-footer"><button id="export-save">Экспорт JSON</button><label class="import-button">Импорт JSON<input id="import-save" type="file" accept=".json,application/json"></label></div></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <noscript>Для симуляции необходимо включить JavaScript в браузере.</noscript>
+</body>
+</html>
